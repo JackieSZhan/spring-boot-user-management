@@ -1,4 +1,4 @@
-package com.example.demo;
+package javaConcepts;
 
 /***
  *
@@ -58,7 +58,7 @@ package com.example.demo;
  *
  * Key point to hit: add() throws an exception (IllegalStateException) if the queue is full. offer() returns false immediately instead of throwing or blocking. put() blocks the calling thread until space becomes available — this blocking behavior is the defining feature of a BlockingQueue and is what makes it ideal for producer-consumer coordination without any manual wait()/notify() code.
  *
- * /
+ */
 
 public class Day4and5Inteview {
 }
