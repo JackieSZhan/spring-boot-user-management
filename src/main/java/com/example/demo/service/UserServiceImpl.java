@@ -1,0 +1,124 @@
+package com.example.demo.service;
+
+import com.example.demo.dto.*;
+import com.example.demo.entity.*;
+import com.example.demo.exception.DuplicateResourceException;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+    @Override
+    @Transactional
+    public UserResponseDto createUser(UserRequestDto request) {
+        userRepository.findByEmail(request.getEmail()).ifPresent(existing -> {
+            throw new DuplicateResourceException(
+                    "A user's email " + request.getEmail() + " already exists"
+            );
+        });
+
+        User user = User.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .phone(request.getPhone())
+                .email(request.getEmail())
+                .active(true)
+                .build();
+        User saved = userRepository.save(user);
+
+        return toResponseDto(saved);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponseDto getUserById(Long id){
+        User user  = findUserOrThrow(id);
+        return  toResponseDto(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll().stream().map(this::toResponseDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User searchByEmail(String keyword) {
+
+        return userRepository.findByEmail(keyword)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email" + keyword));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResponseDto> getUserStatus(Boolean threshold) {
+        return userRepository.findUserStatus(threshold).stream()
+                .map(this::toResponseDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public UserResponseDto updateUser(Long id, UserRequestDto request) {
+        User user = findUserOrThrow(id);
+
+        // If the Email is being changed, re-check uniqueness against OTHER users
+        if (!user.getEmail().equals(request.getEmail())) {
+            userRepository.findByEmail(request.getEmail()).ifPresent(existing -> {
+                throw new DuplicateResourceException(
+                        "A user with ISBN " + request.getEmail() + " already exists");
+            });
+        }
+
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setPhone(request.getPhone());
+        User updated = userRepository.save(user);
+        return toResponseDto(updated);
+    }
+
+    @Override
+    @Transactional
+    public UserResponseDto updateUserStatus(Long id, boolean status) {
+        User user = findUserOrThrow(id);
+        user.setActive(status);
+        User updatedUser = userRepository.save(user);
+        return toResponseDto(updatedUser);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = findUserOrThrow(id);
+        userRepository.delete(user);
+    }
+    
+    private User findUserOrThrow(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+    }
+
+    private UserResponseDto toResponseDto(User user) {
+        return UserResponseDto.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .active(user.getActive())
+                .build();
+    }
+
+
+}
