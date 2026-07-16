@@ -39,6 +39,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public List<UserResponseDto> createUsers(List<UserRequestDto> request) {
+        return request.stream()
+                .map(this::createUser)
+                .toList();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public UserResponseDto getUserById(Long id){
         User user  = findUserOrThrow(id);

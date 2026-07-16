@@ -8,6 +8,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,15 @@ public class UserController {
         UserResponseDto created = userService.createUser(request);
         URI location = URI.create("api/users/" + created.getId());
         return ResponseEntity.created(location).body(created);
+    }
+
+    // POST /api/users/batch
+    // Create multiple users
+    @PostMapping("/batch")
+    public ResponseEntity<List<UserResponseDto>> createUsers(@Valid @RequestBody List<UserRequestDto> request){
+        List<UserResponseDto> created = userService.createUsers(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+
     }
 
     @GetMapping("/{id}")
