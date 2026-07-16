@@ -26,7 +26,7 @@ public class UserRequestDto {
 
     @NotBlank(message = "Phone is required")
     @Size(max = 20, message = "Phone Number is too long")
-    @Pattern(regexp = "^{10,20}$", message = "Invalid Phone Number")
+    @Pattern(regexp = "^\\d{10,20}$", message = "Phone number is either too long or too short")
     private String phone;
 
 

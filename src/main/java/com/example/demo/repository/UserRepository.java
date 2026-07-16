@@ -20,6 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //     SELECT * FROM User WHERE phone = ?
     List<User> findByPhone(String phone);
 
+    //     Email should be unique, so we expect at most one result
     //     SELECT * FROM User WHERE email = ?
     Optional<User> findByEmail(String email);
 

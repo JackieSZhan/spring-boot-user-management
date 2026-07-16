@@ -13,16 +13,14 @@ public interface UserService {
 
     List<UserResponseDto> getAllUsers();
 
-    List<UserResponseDto> searchByEmail(String keyword);
+    UserResponseDto searchByEmail(String keyword);
 
-    List<UserResponseDto> getActiveUsers(Boolean threshold);
-
-    List<UserResponseDto> getInactiveUsers(Boolean threshold);
-
-    void deleteUser(Long id);
+    List<UserResponseDto> getUsersByStatus(Boolean threshold);
 
     UserResponseDto updateUser(Long id, UserRequestDto request);
 
+    UserResponseDto updateUserStatus(Long id, Boolean active);
 
+    void deleteUser(Long id);
 }
 

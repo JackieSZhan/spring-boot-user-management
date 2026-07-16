@@ -54,15 +54,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User searchByEmail(String keyword) {
-
-        return userRepository.findByEmail(keyword)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email" + keyword));
+    public UserResponseDto searchByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with email" + email)
+                );
+        return toResponseDto(user);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserResponseDto> getUserStatus(Boolean threshold) {
+    public List<UserResponseDto> getUsersByStatus(Boolean threshold) {
         return userRepository.findUserStatus(threshold).stream()
                 .map(this::toResponseDto)
                 .toList();
@@ -91,11 +93,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDto updateUserStatus(Long id, boolean status) {
+    public UserResponseDto updateUserStatus(Long id, Boolean status) {
         User user = findUserOrThrow(id);
         user.setActive(status);
-        User updatedUser = userRepository.save(user);
-        return toResponseDto(updatedUser);
+        return toResponseDto(userRepository.save(user));
     }
 
     @Override
@@ -112,6 +113,7 @@ public class UserServiceImpl implements UserService {
 
     private UserResponseDto toResponseDto(User user) {
         return UserResponseDto.builder()
+                .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .phone(user.getPhone())

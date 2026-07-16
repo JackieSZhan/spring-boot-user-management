@@ -33,25 +33,25 @@ public class UserController {
         UserResponseDto user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
+
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-
     @GetMapping("/search")
-    public ResponseEntity<List<UserResponseDto>> searchUsers(@RequestParam String keyword) {
+    public ResponseEntity<UserResponseDto> searchUsers(@RequestParam String keyword) {
         return ResponseEntity.ok(userService.searchByEmail(keyword));
     }
 
     /**
-     * GET /api/users/status?threshold=true
+     * GET /api/users/status?active=true
      * @RequestParam with a default value if the client omits it entirely.
      */
     @GetMapping("/status")
-    public ResponseEntity<List<UserResponseDto>> getUserStatus(
-            @RequestParam(defaultValue = "true") Boolean threshold) {
-        return ResponseEntity.ok(userService.getActiveUsers(threshold));
+    public ResponseEntity<List<UserResponseDto>> getUsersByStatus(
+            @RequestParam(defaultValue = "true") Boolean status) {
+        return ResponseEntity.ok(userService.getUsersByStatus(status));
     }
 
     /**
@@ -68,6 +68,17 @@ public class UserController {
     }
 
     /**
+     * Patch /api/users/{id}
+     * Update User's status
+     */
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<UserResponseDto> updateUserStatus(
+            @PathVariable Long id, @RequestParam Boolean status) {
+        UserResponseDto updated = userService.updateUserStatus(id, status);
+        return ResponseEntity.ok(updated);
+    }
+
+    /**
      * DELETE /api/users/{id}
      * Idempotent - deleting an already-deleted (or never-existing) user
      * has the same end state as deleting it once.
@@ -78,4 +89,6 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build(); // 204
     }
+
+
 }
