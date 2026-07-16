@@ -49,9 +49,10 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    //GET /api/users/search?email=xxx@example.com
     @GetMapping("/search")
-    public ResponseEntity<UserResponseDto> searchUsers(@RequestParam String keyword) {
-        return ResponseEntity.ok(userService.searchByEmail(keyword));
+    public ResponseEntity<UserResponseDto> searchUsers(@RequestParam String email) {
+        return ResponseEntity.ok(userService.searchByEmail(email));
     }
 
     /**
