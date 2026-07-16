@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // --- A custom JPQL query for something method-name derivation can't express cleanly:
     //     "find all User that are active or inactive" (below a given threshold)
     @Query("SELECT u FROM User u WHERE u.active = :threshold")
-    List<User> findUserStatus(@Param("threshold") boolean threshold);
+    List<User> findUserStatus(@Param("threshold") Boolean threshold);
 
 
 }
