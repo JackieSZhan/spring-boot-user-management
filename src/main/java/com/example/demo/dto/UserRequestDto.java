@@ -12,13 +12,9 @@ import java.time.LocalDate;
 @Builder
 
 public class UserRequestDto {
-    @NotBlank(message = "FirstName is requeired")
-    @Size(max = 50, message = "FirstName must not exceed 50 characters")
-    private String firstName;
-
-    @NotBlank(message = "LastName is required")
-    @Size(max = 50, message = "LastName must not exceed 50 characters")
-    private String lastName;
+    @NotBlank(message = "Full Name is requeired")
+    @Size(max = 50, message = "Full Name must not exceed 50 characters")
+    private String fullName;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email is not in correct form")

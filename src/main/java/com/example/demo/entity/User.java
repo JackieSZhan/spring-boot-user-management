@@ -18,10 +18,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String firstName;
-
-    @Column(nullable = false, length = 50)
-    private String lastName;
+    private String fullName;
 
     @Column(nullable = false, unique = true, length = 20)
     private String phone;

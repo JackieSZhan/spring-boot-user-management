@@ -11,11 +11,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    //     SELECT * FROM User WHERE firstName = ?
-    List<User> findByFirstName(String firstName);
-
-    //     SELECT * FROM User WHERE LastName = ?
-    List<User> findByLastName(String lastName);
+    //     SELECT * FROM User WHERE FullName = ?
+    List<User> findByFullName(String fullName);
 
     //     SELECT * FROM User WHERE phone = ?
     List<User> findByPhone(String phone);

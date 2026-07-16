@@ -28,8 +28,7 @@ public class UserServiceImpl implements UserService {
         });
 
         User user = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
+                .fullName(request.getFullName())
                 .phone(request.getPhone())
                 .email(request.getEmail())
                 .active(true)
@@ -79,12 +78,11 @@ public class UserServiceImpl implements UserService {
         if (!user.getEmail().equals(request.getEmail())) {
             userRepository.findByEmail(request.getEmail()).ifPresent(existing -> {
                 throw new DuplicateResourceException(
-                        "A user with ISBN " + request.getEmail() + " already exists");
+                        "A user with Email " + request.getEmail() + " already exists");
             });
         }
 
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
+        user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         User updated = userRepository.save(user);
@@ -114,8 +112,7 @@ public class UserServiceImpl implements UserService {
     private UserResponseDto toResponseDto(User user) {
         return UserResponseDto.builder()
                 .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .fullName(user.getFullName())
                 .phone(user.getPhone())
                 .email(user.getEmail())
                 .active(user.getActive())
